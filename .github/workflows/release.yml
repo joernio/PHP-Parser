@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches:
-      - ${{ github.event.repository.default_branch }}
+      - 4.x
 
 env:
   COMPOSER: "${GITHUB_WORKSPACE}/composer-release.json"
