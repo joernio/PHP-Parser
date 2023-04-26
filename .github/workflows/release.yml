@@ -5,7 +5,7 @@ on:
       - 4.x
 
 env:
-  COMPOSER: "${GITHUB_WORKSPACE}/composer-release.json"
+  COMPOSER: "composer-release.json"
 
 jobs:
   create_release:
