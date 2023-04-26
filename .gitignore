@@ -1,5 +1,6 @@
 vendor/
 composer.lock
+composer-release.lock
 grammar/kmyacc.exe
 grammar/y.output
 .phpunit.result.cache

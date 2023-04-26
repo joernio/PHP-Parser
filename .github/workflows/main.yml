@@ -23,18 +23,6 @@ jobs:
           composer update --no-progress --prefer-dist
       - name: "Tests"
         run: "php vendor/bin/phpunit --coverage-clover build/logs/clover.xml"
-      - name: Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: "php vendor/bin/php-coveralls"
-        if: ${{ success() }}
-      - name: Pack phar
-        run: "php -d phar.readonly=false compiler/compiler.php"
-      - name: Release
-        uses: softprops/action-hg-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: php-parser.phar
 
   tests:
     runs-on: "ubuntu-latest"
