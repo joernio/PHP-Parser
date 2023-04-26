@@ -24,11 +24,14 @@ jobs:
       - name: "Pack phar"
         run: "php -d phar.readonly=false compiler/compiler.php"
       - name: Bump version and push tag
-        uses: mathieudutour/github-tag-action@v6.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        id: tag_version
+        uses: anothrNick/github-tag-action@1.61.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          RELEASE_BRANCHES: 4.x
       - name: "Release"
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
         with:
-          files: php-parser.phar
+          artifacts: "php-parser.phar"
+          tag: ${{ steps.tag_version.outputs.new_tag }}
