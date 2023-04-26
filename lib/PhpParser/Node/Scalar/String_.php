@@ -132,7 +132,7 @@ class String_ extends Scalar
         if ($num <= 0x7F) {
             return chr($num);
         } else {
-            return "\x" . $hexstr;
+            return '\x' . $hexstr;
         }
     }
 
