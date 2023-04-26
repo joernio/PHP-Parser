@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-
 foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
     if (file_exists($file)) {
         require $file;
@@ -55,8 +54,10 @@ foreach ($files as $file) {
         $code = $file;
         fwrite(STDERR, "====> Code $code\n");
     } else {
+	$file = realpath($file);
         if (!file_exists($file)) {
             fwrite(STDERR, "File $file does not exist.\n");
+	    var_dump($file);
             exit(1);
         }
 
