@@ -52,46 +52,26 @@ $finder = new Finder();
 
 $finder->files()
     ->ignoreVCS(true)
-    ->name('*.php')
-    ->name("*.y")
-    ->name("*.template")
+    ->name("*.php")
     ->name("php-parse")
+    ->name("LICENSE")
     ->in(__DIR__ . "/../bin")
     ->in(__DIR__ . "/../lib")
-    ->in(__DIR__ . "/../grammar");
+    ->in(__DIR__ . "/../vendor/composer");
 
-foreach ($finder as $file)
+foreach ($finder as $file) {
+	echo "Adding file " . $file->getRealPath() . " : " . getRelativeFilePath($file) . "\n";
     $phar->addFile($file->getRealPath(), getRelativeFilePath($file));
+}
 
-// add license
-$finder = new Finder();
-
-$finder->files()
-    ->ignoreVCS(true)
-    ->name('LICENSE')
-    ->in(__DIR__ . "/../");
-
-foreach ($finder as $file)
-    $phar->addFile($file->getRealPath(), getRelativeFilePath($file));
+$phar->addFile(__DIR__ . "/../vendor/autoload.php", "vendor/autoload.php");
+$phar->addFile(__DIR__ . "/../LICENSE", "LICENSE");
 
 // entry point
 $file = 'bin/php-parse';
-
-// create default "boot" loader
-$boot_loader = $phar->createDefaultStub($file);
-
-// add shebang to bootloader
-$stub = "#!/usr/bin/env php\n";
-
-$boot_loader = $stub . $boot_loader;
-
-// set bootloader
-$phar->setStub($boot_loader);
+$phar->setDefaultStub($file);
 
 $phar->stopBuffering();
-
-// compress to gzip
-//$phar->compress(Phar::GZ);
 
 echo('Create phar - OK');
 
