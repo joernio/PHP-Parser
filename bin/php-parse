@@ -8,6 +8,14 @@ foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php
     }
 }
 
+spl_autoload_register(function ($class_name) {
+    $file = __DIR__ . '/../lib/' . $class_name . '.php';
+    $file = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $file);
+    if (file_exists($file)) {
+        require $file;
+    }
+});
+
 ini_set('xdebug.max_nesting_level', 3000);
 
 // Disable Xdebug var_dump() output truncation
@@ -85,7 +93,7 @@ foreach ($files as $file) {
             echo $prettyPrinter->prettyPrintFile($stmts), "\n";
         } elseif ('json-dump' === $operation) {
             fwrite(STDERR, "==> JSON dump:\n");
-            echo json_encode($stmts, JSON_PRETTY_PRINT), "\n";
+            echo json_encode($stmts, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_SUBSTITUTE), "\n";
         } elseif ('var-dump' === $operation) {
             fwrite(STDERR, "==> var_dump():\n");
             var_dump($stmts);

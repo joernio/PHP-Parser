@@ -13,26 +13,13 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
-        "ext-tokenizer": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^6.5 || ^7.0 || ^8.0 || ^9.0 || ^10.0",
-        "ircmaxell/php-yacc": "^0.0.7"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "4.9-dev"
-        }
+        "php": ">=8.0",
+        "ext-tokenizer": "*",
+        "symfony/finder": "^6"
     },
     "autoload": {
         "psr-4": {
             "PhpParser\\": "lib/PhpParser"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "PhpParser\\": "test/PhpParser/"
         }
     },
     "bin": [

@@ -116,7 +116,7 @@ class String_ extends Scalar
                 if (isset(self::$replacements[$str])) {
                     return self::$replacements[$str];
                 } elseif ('x' === $str[0] || 'X' === $str[0]) {
-                    return chr(hexdec(substr($str, 1)));
+                    return self::singleByteHexReplacement(substr($str, 1));
                 } elseif ('u' === $str[0]) {
                     return self::codePointToUtf8(hexdec($matches[2]));
                 } else {
@@ -125,6 +125,15 @@ class String_ extends Scalar
             },
             $str
         );
+    }
+
+    private static function singleByteHexReplacement(string $hexstr) : string {
+        $num = hexdec($hexstr);
+        if ($num <= 0x7F) {
+            return chr($num);
+        } else {
+            return '\x' . $hexstr;
+        }
     }
 
     /**
