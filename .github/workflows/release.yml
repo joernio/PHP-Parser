@@ -20,7 +20,7 @@ jobs:
           php-version: "8.2"
           tools: composer:v2
       - name: "Install dependencies"
-        run: "composer update --no-progress --prefer-dist"
+        run: "composer update --no-progress --prefer-dist --ignore-platform-reqs"
       - name: "Pack phar"
         run: "php -d phar.readonly=false compiler/compiler.php"
       - name: Bump version and push tag
