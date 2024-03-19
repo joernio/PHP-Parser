@@ -1,3 +1,77 @@
+Version 4.19.1 (2024-03-17)
+---------------------------
+
+### Fixed
+
+* Fixed "Optional parameter before required parameter" deprecation warning introduced in
+  previous version.
+
+Version 4.19.0 (2024-03-16)
+---------------------------
+
+### Changed
+
+* Do not use implicitly nullable parameters, which are deprecated in PHP 8.4.
+* Remove support for running on PHP 7.0, which does not support explicitly nullable parameters.
+
+Version 4.18.0 (2023-12-10)
+---------------------------
+
+### Added
+
+* Added methods `ParserFactory::createForNewestSupportedVersion()` and
+  `ParserFactory::createForHostVersion()` for forward-compatibility with PHP-Parser 5.0.
+
+### Fixed
+
+* Fixed missing name resolution of class constant types.
+* Fixed class members being dropped if an error is encountered while parsing a later class member
+  (when error recovery is enabeld).
+
+### Changed
+
+* The `grammar/` directory has been excluded from exported git archives.
+
+Version 4.17.1 (2023-08-13)
+---------------------------
+
+### Fixed
+
+* Fixed phpdoc mismatches for `ClassConst::$type` introduced in previous release.
+
+Version 4.17.0 (2023-08-13)
+---------------------------
+
+### Added
+
+* [PHP 8.3] Added support for typed class constants.
+* [PHP 8.3] Added supprot for dynamic class constant fetch.
+* [PHP 8.3] Added support for readonly anonymous classes.
+
+### Fixed
+
+* Fixed missing required parentheses when pretty printing new with an expression class name.
+* Fixed missing required parentheses when pretty printing `(CONST)::$x` and similar.
+
+Version 4.16.0 (2023-06-25)
+---------------------------
+
+### Added
+
+* Added `Name::getParts()` method for forward-compatibility with PHP-Parser 5.
+
+### Deprecated
+
+* Deprecated direct access to `Name::$parts`, which will be removed in PHP-Parser 5.
+
+Version 4.15.5 (2023-05-19)
+---------------------------
+
+### Added
+
+* Added `makePrivate()`, `makeProtected()`, `makePublic()` and `makeReadonly()` methods to
+  `Builder\Param` to allow the creation of promoted parameters.
+
 Version 4.15.4 (2023-03-05)
 ---------------------------
 
