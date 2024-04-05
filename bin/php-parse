@@ -152,13 +152,21 @@ function parseArgs($args) {
         'with-column-info' => false,
         'with-positions' => false,
         'with-recovery' => false,
+        'encoding' => 'UTF-8',
     ];
 
     array_shift($args);
     $parseOptions = true;
+    $expectEncoding = false;
     foreach ($args as $arg) {
         if (!$parseOptions) {
             $files[] = $arg;
+            continue;
+        }
+
+        if ($expectEncoding) {
+            $expectEncoding = false;
+            $attributes['encoding'] = $arg;
             continue;
         }
 
@@ -193,6 +201,10 @@ function parseArgs($args) {
             case '--with-recovery':
             case '-r':
                 $attributes['with-recovery'] = true;
+                break;
+            case '--encoding':
+            case '-e':
+                $expectEncoding = true;
                 break;
             case '--help':
             case '-h';

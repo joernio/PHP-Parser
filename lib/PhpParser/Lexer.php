@@ -46,6 +46,8 @@ class Lexer
             [\T_WHITESPACE, \T_OPEN_TAG, \T_COMMENT, \T_DOC_COMMENT, \T_BAD_CHARACTER], 1
         );
 
+        $this->encoding = $options['encoding'] ?? 'UTF-8';
+
         $defaultAttributes = ['comments', 'startLine', 'endLine'];
         $usedAttributes = array_fill_keys($options['usedAttributes'] ?? $defaultAttributes, true);
 
@@ -155,7 +157,7 @@ class Lexer
             if ($token[0] === \T_COMMENT && substr($token[1], 0, 2) !== '/*'
                     && preg_match('/(\r\n|\n|\r)$/D', $token[1], $matches)) {
                 $trailingNewline = $matches[0];
-                $token[1] = substr($token[1], 0, -strlen($trailingNewline));
+                $token[1] = substr($token[1], 0, -mb_strlen($trailingNewline, $this->encoding));
                 $this->tokens[$i] = $token;
                 if (isset($this->tokens[$i + 1]) && $this->tokens[$i + 1][0] === \T_WHITESPACE) {
                     // Move trailing newline into following T_WHITESPACE token, if it already exists.
@@ -226,7 +228,7 @@ class Lexer
             }
 
             $tokenValue = \is_string($token) ? $token : $token[1];
-            $tokenLen = \strlen($tokenValue);
+            $tokenLen = \mb_strlen($tokenValue, $this->encoding);
 
             if (substr($this->code, $filePos, $tokenLen) !== $tokenValue) {
                 // Something is missing, must be an invalid character
@@ -244,7 +246,7 @@ class Lexer
             $line += substr_count($tokenValue, "\n");
         }
 
-        if ($filePos !== \strlen($this->code)) {
+        if ($filePos !== \mb_strlen($this->code, $this->encoding)) {
             if (substr($this->code, $filePos, 2) === '/*') {
                 // Unlike PHP, HHVM will drop unterminated comments entirely
                 $comment = substr($this->code, $filePos);
@@ -252,7 +254,7 @@ class Lexer
                     'startLine' => $line,
                     'endLine' => $line + substr_count($comment, "\n"),
                     'startFilePos' => $filePos,
-                    'endFilePos' => $filePos + \strlen($comment),
+                    'endFilePos' => $filePos + \mb_strlen($comment, $this->encoding),
                 ]));
 
                 // Emulate the PHP behavior
@@ -261,7 +263,7 @@ class Lexer
             } else {
                 // Invalid characters at the end of the input
                 $badCharTokens = $this->handleInvalidCharacterRange(
-                    $filePos, \strlen($this->code), $line, $errorHandler);
+                    $filePos, \mb_strlen($this->code, $this->encoding), $line, $errorHandler);
                 $this->tokens = array_merge($this->tokens, $badCharTokens);
             }
             return;
@@ -274,7 +276,7 @@ class Lexer
                 $errorHandler->handleError(new Error('Unterminated comment', [
                     'startLine' => $line - substr_count($lastToken[1], "\n"),
                     'endLine' => $line,
-                    'startFilePos' => $filePos - \strlen($lastToken[1]),
+                    'startFilePos' => $filePos - \mb_strlen($lastToken[1], $this->encoding),
                     'endFilePos' => $filePos,
                 ]));
             }
@@ -325,6 +327,8 @@ class Lexer
                 $startAttributes['startFilePos'] = $this->filePos;
             }
 
+            echo "TOKEN: " . serialize($token) . "\n";
+
             if (\is_string($token)) {
                 $value = $token;
                 if (isset($token[1])) {
@@ -346,12 +350,12 @@ class Lexer
                 }
 
                 $this->line += substr_count($value, "\n");
-                $this->filePos += \strlen($value);
+                $this->filePos += \mb_strlen($value, $this->encoding);
             } else {
                 $origLine = $this->line;
                 $origFilePos = $this->filePos;
                 $this->line += substr_count($token[1], "\n");
-                $this->filePos += \strlen($token[1]);
+                $this->filePos += \mb_strlen($token[1], $this->encoding);
 
                 if (\T_COMMENT === $token[0] || \T_DOC_COMMENT === $token[0]) {
                     if ($this->attributeCommentsUsed) {
@@ -418,7 +422,7 @@ class Lexer
         $this->pos = count($this->tokens);
 
         // return with (); removed
-        return substr($textAfter, strlen($matches[0]));
+        return substr($textAfter, mb_strlen($matches[0], $this->encoding));
     }
 
     private function defineCompatibilityTokens() {
