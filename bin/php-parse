@@ -94,7 +94,13 @@ foreach ($files as $file) {
             echo $prettyPrinter->prettyPrintFile($stmts), "\n";
         } elseif ('json-dump' === $operation) {
             fwrite(STDERR, "==> JSON dump:\n");
-            echo json_encode($stmts, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_SUBSTITUTE), "\n";
+            $jsonSubstitute = 0;
+            if (defined(JSON_INVALID_UTF8_SUBSTITUTE)) {
+                $jsonSubstitute = JSON_INVALID_UTF8_SUBSTITUTE;
+            } elseif (defined(JSON_PARTIAL_OUTPUT_ON_ERROR)) {
+                $jsonSubstitute = JSON_PARTIAL_OUTPUT_ON_ERROR;
+            }
+            echo json_encode($stmts, JSON_PRETTY_PRINT | $jsonSubstitute), "\n";
         } elseif ('var-dump' === $operation) {
             fwrite(STDERR, "==> var_dump():\n");
             var_dump($stmts);
