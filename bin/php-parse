@@ -95,9 +95,9 @@ foreach ($files as $file) {
         } elseif ('json-dump' === $operation) {
             fwrite(STDERR, "==> JSON dump:\n");
             $jsonSubstitute = 0;
-            if (defined(JSON_INVALID_UTF8_SUBSTITUTE)) {
+            if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
                 $jsonSubstitute = JSON_INVALID_UTF8_SUBSTITUTE;
-            } elseif (defined(JSON_PARTIAL_OUTPUT_ON_ERROR)) {
+            } elseif (defined('JSON_PARTIAL_OUTPUT_ON_ERROR')) {
                 $jsonSubstitute = JSON_PARTIAL_OUTPUT_ON_ERROR;
             }
             echo json_encode($stmts, JSON_PRETTY_PRINT | $jsonSubstitute), "\n";
